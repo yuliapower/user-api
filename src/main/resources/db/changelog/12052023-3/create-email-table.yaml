@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12052023-3
+      author: Julia Suslova
+      changes:
+        - createTable:
+            tableName: email_data
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_email_usr
+                    references: usr(id)
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+                    unique: true

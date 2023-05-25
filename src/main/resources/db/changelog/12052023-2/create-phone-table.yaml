@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12052023-2
+      author: Julia Suslova
+      changes:
+        - createTable:
+            tableName: phone_data
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_phone_usr
+                    references: usr(id)
+                    nullable: false
+                    unique: true
+              - column:
+                  name: phone
+                  type: varchar(13)
+                  constraints:
+                    nullable: false
+                    unique: true

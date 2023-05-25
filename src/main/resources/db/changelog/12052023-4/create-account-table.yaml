@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12052023-4
+      author: Julia Suslova
+      changes:
+        - createTable:
+            tableName: account
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_account_usr
+                    references: usr(id)
+                    nullable: false
+                    unique: true
+              - column:
+                  name: balance
+                  type: decimal
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: deleted_at
+                  type: timestamp

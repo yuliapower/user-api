@@ -1,0 +1,412 @@
+openapi: 3.0.0
+info:
+  title: User Api
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: local
+tags:
+  - name: User
+    description: User Api
+  - name: Account
+    description: Account Api
+
+paths:
+  /api/v1/users:
+    post:
+      tags:
+        - User
+      summary: create new user
+      operationId: addUser
+      requestBody:
+        description: Registration User DTO
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationUserDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+        '400':
+          description: Bad request
+
+    get:
+      tags:
+        - User
+      summary: find all users
+      operationId: findAll
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponseDTO'
+        '400':
+          description: Bad request
+
+  /api/v1/users/{id}:
+    patch:
+      tags:
+        - User
+      summary: update user by id
+      operationId: updateUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: User request DTO for update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestDTOForUpdate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+        '400':
+          description: Bad request
+
+    get:
+      tags:
+        - User
+      summary: find user by id
+      operationId: findUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+        '400':
+          description: Bad request
+
+    delete:
+      tags:
+        - User
+      summary: delete user by id
+      operationId: deleteUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad request
+
+  /api/v1/users/criteria:
+    get:
+      tags:
+        - User
+      summary: find all users by criteria
+      operationId: finaAllUsersByCriteria
+      parameters:
+        - name: User
+          in: query
+          schema:
+            $ref: '#/components/schemas/UserCriteriaFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PageUserResponse'
+        '400':
+          description: Bad request
+
+  /api/v1/accounts/criteria:
+    get:
+      tags:
+        - Account
+      summary: find all accounts by criteria
+      operationId: finaAllAccountsByCriteria
+      parameters:
+        - name: Account
+          in: query
+          schema:
+            $ref: '#/components/schemas/AccountCriteriaFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PageAccountResponse'
+        '400':
+          description: Bad request
+
+components:
+  schemas:
+    #    --------------- Request ---------------
+    UserCriteriaFilter:
+      allOf:
+        - $ref: "#/components/schemas/BaseFilter"
+        - type: object
+      properties:
+        userName:
+          type: string
+        dateOfBirthStart:
+          type: string
+          format: date-time
+        dateOfBirthEnd:
+          type: string
+          format: date-time
+        email:
+          type: string
+        growBalance:
+          type: number
+          format: double
+        lowBalance:
+          type: number
+          format: double
+        phone:
+          type: string
+
+    AccountCriteriaFilter:
+      allOf:
+        - $ref: "#/components/schemas/BaseFilter"
+        - type: object
+      properties:
+        userName:
+          type: string
+        dateOfBirthStart:
+          type: string
+          format: date-time
+        dateOfBirthEnd:
+          type: string
+          format: date-time
+        email:
+          type: string
+        growBalance:
+          type: number
+          format: double
+        lowBalance:
+          type: number
+          format: double
+        phone:
+          type: string
+
+    RegistrationUserDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: User name
+        birthDate:
+          type: string
+          format: date-time
+          description: User birthday date
+        password:
+          type: string
+          description: User password
+        phone:
+          type: string
+          items:
+            $ref: '#/components/schemas/ShortPhoneDto'
+          description: Phone number
+        email:
+          type: string
+          items:
+            $ref: '#/components/schemas/ShortEmailDto'
+          description: User email
+
+
+    UserRequestDTOForUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: User name
+        password:
+          type: string
+          description: User password
+        phone:
+          type: string
+          items:
+            $ref: '#/components/schemas/ShortPhoneDto'
+          description: Phone number
+        email:
+          type: string
+          items:
+            $ref: '#/components/schemas/ShortEmailDto'
+          description: User email
+
+    # --- Response ---
+    ShortPhoneDto:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Phone number
+
+    ShortEmailDto:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email
+
+    AccountDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Account id
+        user_id:
+          type: integer
+          format: int64
+          description: User id
+        balance:
+          type: number
+          format: double
+          description: User balance
+
+    UserResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: User id
+        name:
+          type: string
+          description: User name
+        birthDate:
+          type: string
+          format: date-time
+          description: User birthday date
+        phone:
+          type: string
+          description: Phone number
+        email:
+          type: string
+          description: User email
+        balance:
+          type: number
+          format: double
+
+    PageUserResponse:
+      allOf:
+        - $ref: "#/components/schemas/BasePage"
+        - type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponseDTO'
+
+    PageAccountResponse:
+      allOf:
+        - $ref: "#/components/schemas/BasePage"
+        - type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDto'
+
+      #   <------------- Base DTO ------------->
+    BaseFilter:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          default: 10
+        pageNumber:
+          type: integer
+          default: 0
+        sort:
+          type: array
+          items:
+            type: string
+
+    BasePage:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        numberOfElements:
+          type: integer
+          format: int32
+        last:
+          type: boolean
+        empty:
+          type: boolean
+
+    Sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean
+
+    Pageable:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: '#/components/schemas/Sort'
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
